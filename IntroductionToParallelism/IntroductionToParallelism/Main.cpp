@@ -35,7 +35,7 @@ void displayMatrix(Matrix& matrixP) {
 	}
 }
 
-float singleNumberCalculus(vector<float>& rowP, vector<float>& colP, int sizeP) {
+float singleNumberCalculus(vector<float> rowP, vector<float> colP, int sizeP) {
 	float result{ 0.0f };
 
 	for (int i = 0; i < sizeP; i++)
@@ -89,7 +89,7 @@ Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
 			vector<float> bMatrixCol = getMatrixColByIndex(bMatrixP, width);
 
 			std::thread t(
-				[&] {
+				[=, &resultMatrixContent] {
 					float result = singleNumberCalculus(aMatrixRow, bMatrixCol, aMatrixP.width);
 
 					int currentIndex = width + height * bMatrixP.width;
@@ -97,16 +97,14 @@ Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
 				}
 			);	
 
-			t.join();
-
 			threads.push_back(std::move(t));
 		}
 	}
 
-	//for (std::thread& t : threads)
-	//{
-	//	t.join();
-	//}
+	for (std::thread& t : threads)
+	{
+		t.join();
+	}
 
 	Matrix resultMatrix(
 		resultMatrixContent,
@@ -118,15 +116,11 @@ Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
 }
 
 int main() {
-	//std::thread t{ sayHello };
-
-	//t.join(); // Wait for the thread
-
 	Matrix aMatrix{
 		{
-			1.0, 0.0, 0.0,
-			0.0, 1.0, 0.0,
-			0.0, 0.0, 1.0
+			2.0, 0.0, 0.0,
+			0.0, 2.0, 0.0,
+			0.0, 0.0, 2.0
 		},
 		3,
 		3
