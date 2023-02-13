@@ -58,6 +58,12 @@ vector<float> getMatrixColByIndex(Matrix& matrixP, int indexP) {
 }
 
 Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
+	vector<std::thread> threads;
+
+	size_t resultMatrixSize = bMatrixP.width * bMatrixP.height;
+	vector<float> resultMatrixContent;
+	resultMatrixContent.reserve(resultMatrixSize);
+
 	if (aMatrixP.width != bMatrixP.height)
 	{
 		cout << "YOU CAN'T MULTIPLY THOSE TWO MATRICES" << endl;
@@ -70,8 +76,6 @@ Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
 
 		return errorMatrix;
 	}
-
-	vector<float> resultMatrixContent;	
 	
 	for (int height = 0; height < bMatrixP.height; height++)
 	{
@@ -83,10 +87,22 @@ Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
 		for (int width = 0; width < bMatrixP.width; width++) {
 			vector<float> bMatrixCol = getMatrixColByIndex(bMatrixP, width);
 
-			float result = singleNumberCalculus(aMatrixRow, bMatrixCol, aMatrixP.width);
+			std::thread t(
+				[&] {
+					float result = singleNumberCalculus(aMatrixRow, bMatrixCol, aMatrixP.width);
 
-			resultMatrixContent.push_back(result);
+					int currentIndex = width + height * bMatrixP.width;
+					resultMatrixContent[currentIndex] = result;
+				}
+			);		
+
+			threads.push_back(std::move(t));
 		}
+	}
+
+	for (std::thread& t : threads)
+	{
+		t.join();
 	}
 
 	Matrix resultMatrix(
