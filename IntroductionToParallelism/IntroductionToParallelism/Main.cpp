@@ -63,6 +63,7 @@ Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
 	size_t resultMatrixSize = bMatrixP.width * bMatrixP.height;
 	vector<float> resultMatrixContent;
 	resultMatrixContent.reserve(resultMatrixSize);
+	resultMatrixContent.resize(resultMatrixSize);
 
 	if (aMatrixP.width != bMatrixP.height)
 	{
@@ -94,16 +95,18 @@ Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
 					int currentIndex = width + height * bMatrixP.width;
 					resultMatrixContent[currentIndex] = result;
 				}
-			);		
+			);	
+
+			t.join();
 
 			threads.push_back(std::move(t));
 		}
 	}
 
-	for (std::thread& t : threads)
-	{
-		t.join();
-	}
+	//for (std::thread& t : threads)
+	//{
+	//	t.join();
+	//}
 
 	Matrix resultMatrix(
 		resultMatrixContent,
@@ -121,9 +124,9 @@ int main() {
 
 	Matrix aMatrix{
 		{
-			2.0, 0.0, 0.0,
-			0.0, 2.0, 0.0,
-			0.0, 0.0, 3.0
+			1.0, 0.0, 0.0,
+			0.0, 1.0, 0.0,
+			0.0, 0.0, 1.0
 		},
 		3,
 		3
