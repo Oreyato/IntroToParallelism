@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <chrono>
 
+#include <thread>
+
 using std::cout;
 using std::endl;
 using std::vector;
@@ -25,12 +27,12 @@ void displayResult(float tableSumP, std::chrono::steady_clock::time_point& start
 	cout << "Table sum: " << tableSumP << endl;
 
 	auto duration = duration_cast<microseconds>(stopTimerP - startTimerP);
-	cout << "Time taken: " << duration.count() << " microseconds" << endl;
+	cout << "Time taken: " << duration.count() << " microseconds\n" << endl;
 }
 #pragma endregion
 
 #pragma region Sequential Solution
-float seqTableSum(vector<float>& tableP) {
+float sequentialTableSum(vector<float>& tableP) {
 	float sum{ 0.0f };
 
 	for (float& val : tableP) {
@@ -39,6 +41,32 @@ float seqTableSum(vector<float>& tableP) {
 
 	return sum;
 }
+#pragma endregion
+
+#pragma region Local threads Solution
+float localThreadsTableSum(vector<float>& tableP, int subTableSizeP) {
+	vector<std::thread> threads;
+	float sum{ 0.0f };
+
+	vector<vector<float>> subTables;
+
+	for (vector<float> subTable : subTables) {
+		std::thread t(
+			[=, &sum, &subTable] {
+				float subSum = sequentialTableSum(subTable);
+				sum += subSum;
+			}
+		);
+
+		threads.push_back(std::move(t));
+	}
+
+	for (std::thread& t : threads) {
+		t.join();
+	}
+
+	return sum;
+};
 #pragma endregion
 
 int main() {
@@ -51,14 +79,26 @@ int main() {
 	//v Sequential ===================================================
 	cout << "===== SEQ =====" << endl;
 
-	auto start = high_resolution_clock::now(); // <--- START TIMER
-	float tableSum = seqTableSum(table);
-	auto stop = high_resolution_clock::now(); // <--- STOP TIMER
+	auto seqStart = high_resolution_clock::now(); // <--- START TIMER
+	float seqTableSum = sequentialTableSum(table);
+	auto seqStop = high_resolution_clock::now(); // <--- STOP TIMER
 
 	// Display results
-	displayResult(tableSum, start, stop);
+	displayResult(seqTableSum, seqStart, seqStop);
 
 	//^ Sequential ===================================================
+	#pragma region Local threads
+	//v Local threads ================================================
+	cout << "===== LTH =====" << endl;
+
+	auto lThreadStart = high_resolution_clock::now(); // <--- START TIMER
+	float lThreadTableSum = localThreadsTableSum(table, 10);
+	auto lThreadStop = high_resolution_clock::now(); // <--- STOP TIMER
+
+	// Display results
+	displayResult(lThreadTableSum, lThreadStart, lThreadStop);
+
+	//v Local threads ================================================
 	#pragma endregion
 
 	return 0;

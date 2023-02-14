@@ -88,8 +88,8 @@ Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
 				[=, &resultMatrixContent] {
 					float result = singleNumberCalculus(aMatrixRow, bMatrixCol, aMatrixP.width);
 
-			int currentIndex = width + height * bMatrixP.width;
-			resultMatrixContent[currentIndex] = result;
+					int currentIndex = width + height * bMatrixP.width;
+					resultMatrixContent[currentIndex] = result;
 				}
 			);
 
