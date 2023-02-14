@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{9e51adf8-3748-44cb-bbed-2703dd3be5d4}</ProjectGuid>
-    <RootNamespace>IntroductionToParallelism</RootNamespace>
+    <ProjectGuid>{8e812bfc-073e-45f1-873a-5a30eb220fd4}</ProjectGuid>
+    <RootNamespace>SumOfATable</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>MatrixProduct</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

@@ -8,10 +8,6 @@ using std::endl;
 
 using std::vector;
 
-void sayHello() {
-	cout << "Hello world" << endl;
-}
-
 struct Matrix
 {
 	Matrix(std::vector<float> contentP, int widthP, int heightP) :
