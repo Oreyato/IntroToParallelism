@@ -11,9 +11,9 @@ using std::vector;
 struct Matrix
 {
 	Matrix(std::vector<float> contentP, int widthP, int heightP) :
-		content{contentP},
-		width{widthP},
-		height{heightP}
+		content{ contentP },
+		width{ widthP },
+		height{ heightP }
 	{};
 
 	std::vector<float> content{ NULL };
@@ -44,7 +44,7 @@ float singleNumberCalculus(vector<float> rowP, vector<float> colP, int sizeP) {
 
 vector<float> getMatrixColByIndex(Matrix& matrixP, int indexP) {
 	vector<float> result;
-	
+
 	for (int i = 0; i < matrixP.height; i++)
 	{
 		result.push_back(matrixP.content[indexP + i * matrixP.width]);
@@ -73,7 +73,7 @@ Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
 
 		return errorMatrix;
 	}
-	
+
 	for (int height = 0; height < bMatrixP.height; height++)
 	{
 		vector<float> aMatrixRow{
@@ -88,10 +88,10 @@ Matrix matrixProduct(Matrix& aMatrixP, Matrix& bMatrixP) {
 				[=, &resultMatrixContent] {
 					float result = singleNumberCalculus(aMatrixRow, bMatrixCol, aMatrixP.width);
 
-					int currentIndex = width + height * bMatrixP.width;
-					resultMatrixContent[currentIndex] = result;
+			int currentIndex = width + height * bMatrixP.width;
+			resultMatrixContent[currentIndex] = result;
 				}
-			);	
+			);
 
 			threads.push_back(std::move(t));
 		}
