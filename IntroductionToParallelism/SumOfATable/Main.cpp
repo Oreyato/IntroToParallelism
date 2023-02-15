@@ -44,7 +44,34 @@ float sequentialTableSum(vector<float>& tableP) {
 	return sum;
 }
 #pragma endregion
+#pragma region Sequential Solution (more relevant comparison)
+float sequentialSubTableSum(vector<float>& tableP, int subTableSizeP) {
+	float sum{ 0.0f };
 
+	//v Create sub tables ===================
+	vector<vector<float>> subTables;
+	int subTablesNumber = tableSize / subTableSizeP;
+
+	for (int i = 0; i < subTablesNumber; i++)
+	{
+		subTables.emplace_back(tableP.begin() + i * subTableSizeP, tableP.begin() + i * subTableSizeP + subTableSizeP);
+	}
+	int remainingTableEntries = tableSize % subTableSizeP;
+	// Create last sub table	
+	if (remainingTableEntries != 0) {
+		subTables.emplace_back(tableP.end() - remainingTableEntries, tableP.end());
+	}
+	//^ Create sub tables ===================
+
+	// Launch threads
+	for (vector<float>& subTable : subTables) {
+		float subSum = sequentialTableSum(subTable);
+		sum += subSum;
+	}
+
+	return sum;
+};
+#pragma endregion
 #pragma region Local threads Solution
 float localThreadsTableSum(vector<float>& tableP, int subTableSizeP) {
 	vector<std::thread> threads;
@@ -104,6 +131,20 @@ int main() {
 	displayResult(seqTableSum, seqStart, seqStop);
 
 	//^ Sequential ===================================================
+	#pragma endregion
+	#pragma region Sequential (more relevant comparison)
+	//v Sequential (more relevant comparison) ========================
+	cout << "==== SEQ.2 ====" << endl;
+
+	auto seq2Start = high_resolution_clock::now(); // <--- START TIMER
+	float seq2TableSum = sequentialSubTableSum(table, 10);
+	auto seq2Stop = high_resolution_clock::now(); // <--- STOP TIMER
+
+	// Display results
+	displayResult(seq2TableSum, seq2Start, seq2Stop);
+
+	//^ Sequential (more relevant comparison) ========================
+	#pragma endregion
 	#pragma region Local threads
 	//v Local threads ================================================
 	cout << "===== LTH =====" << endl;
