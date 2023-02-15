@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include <thread>
+#include <mutex>
 
 using std::cout;
 using std::endl;
@@ -12,7 +13,7 @@ using std::vector;
 
 using namespace std::chrono;
 
-static const int tableSize = 10000;
+const int tableSize = 10000;
 
 #pragma region Utils
 vector<float> generateTable(int tableSizeP) {
@@ -95,7 +96,7 @@ float localThreadsTableSum(vector<float>& tableP, int subTableSizeP) {
 	// Launch threads
 	for (vector<float>& subTable : subTables) {
 		std::thread t(
-			[=, &sum, &subTable] {
+			[&sum, &subTable] {
 				float subSum = sequentialTableSum(subTable);
 				sum += subSum;
 			}
@@ -107,6 +108,60 @@ float localThreadsTableSum(vector<float>& tableP, int subTableSizeP) {
 	// Join threads
 	for (std::thread& t : threads) {
 		 t.join();
+	}
+
+	return sum;
+};
+#pragma endregion
+#pragma region Mutexes Solution
+// Global mutex
+std::mutex globalMutex;
+
+void mutexSequentialTableSum(vector<float>& tableP, float& sumP) {
+	std::lock_guard<std::mutex> guard(globalMutex);
+
+	float sum{ 0.0f };
+
+	for (float& val : tableP) {
+		sum += val;
+	}
+
+	sumP += sum;
+}
+
+float mutexesTableSum(vector<float>& tableP, int subTableSizeP) {
+	vector<std::thread> threads;
+	float sum{ 0.0f };
+
+	//v Create sub tables ===================
+	vector<vector<float>> subTables;
+	int subTablesNumber = tableSize / subTableSizeP;
+
+	for (int i = 0; i < subTablesNumber; i++)
+	{
+		subTables.emplace_back(tableP.begin() + i * subTableSizeP, tableP.begin() + i * subTableSizeP + subTableSizeP);
+	}
+	int remainingTableEntries = tableSize % subTableSizeP;
+	// Create last sub table	
+	if (remainingTableEntries != 0) {
+		subTables.emplace_back(tableP.end() - remainingTableEntries, tableP.end());
+	}
+	//^ Create sub tables ===================
+
+	// Launch threads
+	for (vector<float>& subTable : subTables) {
+		std::thread t(
+			[&sum, &subTable] {
+				mutexSequentialTableSum(subTable, sum);
+			}
+		);
+
+		threads.push_back(std::move(t));
+	}
+
+	// Join threads
+	for (std::thread& t : threads) {
+		t.join();
 	}
 
 	return sum;
@@ -156,7 +211,20 @@ int main() {
 	// Display results
 	displayResult(lThreadTableSum, lThreadStart, lThreadStop);
 
-	//v Local threads ================================================
+	//^ Local threads ================================================
+	#pragma endregion
+	#pragma region Mutexes
+	//v Mutexes ======================================================
+	cout << "===== MUT =====" << endl;
+
+	auto mutexStart = high_resolution_clock::now(); // <--- START TIMER
+	float mutexTableSum = mutexesTableSum(table, 10);
+	auto mutexStop = high_resolution_clock::now(); // <--- STOP TIMER
+
+	// Display results
+	displayResult(mutexTableSum, mutexStart, mutexStop);
+
+	//^ Mutexes ======================================================
 	#pragma endregion
 
 	return 0;
