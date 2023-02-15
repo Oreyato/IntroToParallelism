@@ -12,6 +12,8 @@ using std::vector;
 
 using namespace std::chrono;
 
+static const int tableSize = 10000;
+
 #pragma region Utils
 vector<float> generateTable(int tableSizeP) {
 	vector<float> table(tableSizeP);
@@ -48,9 +50,23 @@ float localThreadsTableSum(vector<float>& tableP, int subTableSizeP) {
 	vector<std::thread> threads;
 	float sum{ 0.0f };
 
+	//v Create sub tables ===================
 	vector<vector<float>> subTables;
+	int subTablesNumber = tableSize / subTableSizeP;
 
-	for (vector<float> subTable : subTables) {
+	for (int i = 0; i < subTablesNumber; i++)
+	{
+		subTables.emplace_back(tableP.begin() + i * subTableSizeP, tableP.begin() + i * subTableSizeP + subTableSizeP);
+	}
+	int remainingTableEntries = tableSize % subTableSizeP;
+	// Create last sub table	
+	if (remainingTableEntries != 0) {
+		subTables.emplace_back(tableP.end() - remainingTableEntries, tableP.end());
+	}
+	//^ Create sub tables ===================
+
+	// Launch threads
+	for (vector<float>& subTable : subTables) {
 		std::thread t(
 			[=, &sum, &subTable] {
 				float subSum = sequentialTableSum(subTable);
@@ -61,8 +77,9 @@ float localThreadsTableSum(vector<float>& tableP, int subTableSizeP) {
 		threads.push_back(std::move(t));
 	}
 
+	// Join threads
 	for (std::thread& t : threads) {
-		t.join();
+		 t.join();
 	}
 
 	return sum;
@@ -71,7 +88,7 @@ float localThreadsTableSum(vector<float>& tableP, int subTableSizeP) {
 
 int main() {
 	//v Generate table ======================
-	vector<float> table = generateTable(100000);
+	vector<float> table = generateTable(tableSize);
  
 	//^ Generate table ======================
 
