@@ -64,7 +64,7 @@ float sequentialSubTableSum(vector<float>& tableP, int subTableSizeP) {
 	}
 	//^ Create sub tables ===================
 
-	// Launch threads
+	// Sum each subtable
 	for (vector<float>& subTable : subTables) {
 		float subSum = sequentialTableSum(subTable);
 		sum += subSum;
