@@ -38,7 +38,7 @@ void displayResult(float tableSumP, std::chrono::steady_clock::time_point& start
 float sequentialTableSum(vector<float>& tableP) {
 	float sum{ 0.0f };
 
-	for (float& val : tableP) {
+	for (float val : tableP) {
 		sum += val;
 	}
 
@@ -122,7 +122,7 @@ void mutexSequentialTableSum(vector<float>& tableP, float& sumP) {
 
 	float sum{ 0.0f };
 
-	for (float& val : tableP) {
+	for (float val : tableP) {
 		sum += val;
 	}
 

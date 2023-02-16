@@ -5,11 +5,8 @@
 using std::cout;
 using std::endl;
 
-std::mutex globalMutex;
 
 void displayNumbers(int minDisplayedNum = 0, int maxDisplayedNum = 1000, bool evenNumbers = true) {
-	std::lock_guard<std::mutex> lock(globalMutex);
-
 	int evenNumberTest = 0;
 
 	if (!evenNumbers) {
@@ -24,16 +21,51 @@ void displayNumbers(int minDisplayedNum = 0, int maxDisplayedNum = 1000, bool ev
 	}
 }
 
-int main() {
-	#pragma region Without thread version
-	//displayNumbers(0, 1000, true); // Display even numbers
-	//cout << "=====" << endl;
-	//displayNumbers(0, 1000, false); // Display odd numbers
-	#pragma endregion
+std::mutex sharedMutex;
+int i{ 0 };
 
-	std::thread tEven(displayNumbers, 0, 1000, true); // Display even numbers
+void displayEvenNum(int minDisplayedNum = 0, int maxDisplayedNum = 1000) {
+	while (i < maxDisplayedNum)
+	{
+		if (i % 2 == 0) {
+			std::lock_guard<std::mutex> lock(sharedMutex);
+			
+			cout << i << "\n";
+		
+			i++;
+		}
+	}
+}
+void displayOddNum(int minDisplayedNum = 0, int maxDisplayedNum = 1000) {
+	while (i < maxDisplayedNum)
+	{
+		if (i % 2 != 0) {
+			std::lock_guard<std::mutex> lock(sharedMutex);
+
+			cout << i << "\n";
+
+			i++;
+		}
+	}
+}
+
+int main() {
+	int minNum{ 0 };
+	int maxNum{ 1000 };
+
+	#pragma region Without thread version
+	//displayNumbers(minNum, maxNum, true); // Display even numbers
+	//cout << "=====" << endl;
+	//displayNumbers(minNum, maxNum, false); // Display odd numbers
+	#pragma endregion
+	#pragma region Threads without mutexes
+	//std::thread tEven(displayNumbers, minNum, maxNum, true); // Display even numbers
+	//cout << "=====" << endl;
+	//std::thread tOdd(displayNumbers, minNum, maxNum, false); // Display odd numbers
+	#pragma endregion
+	std::thread tEven(displayEvenNum, minNum, maxNum); // Display even numbers
 	cout << "=====" << endl;
-	std::thread tOdd(displayNumbers, 0, 1000, false); // Display odd numbers
+	std::thread tOdd(displayOddNum, minNum, maxNum); // Display odd numbers
 
 	tEven.join();
 	tOdd.join();
