@@ -5,8 +5,11 @@
 using std::cout;
 using std::endl;
 
+std::mutex globalMutex;
 
 void displayNumbers(int minDisplayedNum = 0, int maxDisplayedNum = 1000, bool evenNumbers = true) {
+	std::lock_guard<std::mutex> lock(globalMutex);
+
 	int evenNumberTest = 0;
 
 	if (!evenNumbers) {
