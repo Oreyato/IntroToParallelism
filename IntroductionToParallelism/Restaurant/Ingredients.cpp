@@ -8,21 +8,21 @@ using std::endl;
 
 Ingredients::Ingredients()
 {
-	menuOptions.emplace_back("Carrot", 4);
-	menuOptions.emplace_back("Courgette", 3);
-	menuOptions.emplace_back("Pepper", 2);
-	menuOptions.emplace_back("Salad", 1);
+	menuOptions.emplace_back("Carrot", 4, 1);
+	menuOptions.emplace_back("Courgette", 3, 1);
+	menuOptions.emplace_back("Pepper", 2, 1);
+	menuOptions.emplace_back("Salad", 1, 1);
 	vegetablesNum = 4;
 
-	menuOptions.emplace_back("Potatoe", 8);
-	menuOptions.emplace_back("Rice", 3);
-	menuOptions.emplace_back("Pasta", 2);
+	menuOptions.emplace_back("Potatoe", 8, 2);
+	menuOptions.emplace_back("Rice", 3, 2);
+	menuOptions.emplace_back("Pasta", 2, 1);
 	starchNum = 3;
 
-	menuOptions.emplace_back("Chicken", 3);
-	menuOptions.emplace_back("Beaf", 3);
-	menuOptions.emplace_back("Pollock", 4);
-	menuOptions.emplace_back("Tofu", 2);
+	menuOptions.emplace_back("Chicken", 3, 1);
+	menuOptions.emplace_back("Beaf", 3, 1);
+	menuOptions.emplace_back("Pollock", 4, 2);
+	menuOptions.emplace_back("Tofu", 2, 3);
 	proteinsNum = 4;
 }
 

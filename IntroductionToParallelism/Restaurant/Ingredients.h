@@ -4,13 +4,15 @@
 
 struct Ingredient
 {
-	Ingredient(std::string nameP, float cookingTimeP) : 
+	Ingredient(std::string nameP, int cookingTimeP, int dressingTimeP) :
 		name{nameP},
-		cookingTime{cookingTimeP}
+		cookingTime{cookingTimeP},
+		dressingTime{dressingTimeP}
 	{};
 
 	std::string name{ "" };
-	float cookingTime{ 0.0f };
+	int cookingTime{ 0 };
+	int dressingTime{ 0 };
 };
 
 class Ingredients

@@ -1,12 +1,11 @@
 #include <iostream>
-#include <thread>
-#include <future>
 
 #include <chrono>
 
 #include "Ingredients.h"
 #include "Waiter.h"
 #include "Cooker.h"
+#include "Chief.h"
 
 using std::cout;
 using std::endl;
@@ -19,11 +18,6 @@ public:
 	void eatFood();
 	void exitRestaurant();
 };
-class Chief
-{
-public:
-	void mixIngredients();
-};
 
 int main() {
 	//v Initializations ==============================================
@@ -31,8 +25,9 @@ int main() {
 
 	Customer customer;
 	Waiter waiter;
-	Cooker cooker;
 	Chief chief;
+	Cooker cooker(chief);
+	
 
 	//^ Initializations ==============================================
 	//v Food loop ====================================================
@@ -42,10 +37,16 @@ int main() {
 	// Pick food in the menu and ask for it
 
 	//v Waiter ==============================
+	// Get order
+	// waiter.takeOrder();
+	cooker.setOrder(ingredients.pickDish());
+
 	// Put order on the order board
+	// waiter.sendOrder();
 
 	//v Cooker ==============================
 	// Cook order ingredients
+
 
 	//v Chief ===============================
 	// Mix ingredients
@@ -58,8 +59,10 @@ int main() {
 	//v Customer ============================
 	// Eat food
 
-	// Leave restaurnant
+	// Leave restaurant
 
+	cooker.cookerThread.join();
+	chief.chiefThread.join();
 	//^ Food loop ====================================================
 
 	return 0;
