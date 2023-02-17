@@ -26,7 +26,7 @@ Ingredients::Ingredients()
 	proteinsNum = 4;
 }
 
-void Ingredients::menu() const
+void Ingredients::showMenu() const
 {
 	uint8_t startingIndex{ 0 };
 

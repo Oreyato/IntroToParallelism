@@ -18,7 +18,8 @@ class Ingredients
 public:
 	Ingredients();
 
-	void menu() const;
+	void showMenu() const;
+	inline const std::vector<Ingredient> getMenu() { return menuOptions; }
 
 	std::vector<Ingredient> pickDish() const;
 
