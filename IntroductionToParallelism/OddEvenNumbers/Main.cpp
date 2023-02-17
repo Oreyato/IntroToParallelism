@@ -25,7 +25,7 @@ std::mutex sharedMutex;
 int i{ 0 };
 
 void displayEvenNum(int minDisplayedNum = 0, int maxDisplayedNum = 1000) {
-	while (i < maxDisplayedNum)
+	while (i < maxDisplayedNum + 1)
 	{
 		if (i % 2 == 0) {
 			std::lock_guard<std::mutex> lock(sharedMutex);
